@@ -1,0 +1,65 @@
+from PIL import Image
+import numpy as np
+
+def encrypt_image(image_path, output_path, key):
+    try:
+        # Open the image
+        with Image.open(image_path) as img:
+            # Convert image to RGB mode to ensure consistent processing
+            img = img.convert('RGB')
+            
+            # Convert image to numpy array
+            img_array = np.array(img)
+
+            # Apply encryption: add key value to each pixel
+            encrypted_array = (img_array + key) % 256
+
+            # Convert back to PIL Image and save
+            encrypted_image = Image.fromarray(encrypted_array.astype('uint8'))
+            encrypted_image.save(output_path)
+            print(f"Encrypted image saved to {output_path}")
+
+    except Exception as e:
+        print(f"Error during encryption: {e}")
+
+def decrypt_image(image_path, output_path, key):
+    try:
+        # Open the image
+        with Image.open(image_path) as img:
+            # Convert image to RGB mode to ensure consistent processing
+            img = img.convert('RGB')
+            
+            # Convert image to numpy array
+            img_array = np.array(img)
+
+            # Apply decryption: subtract key value from each pixel
+            decrypted_array = (img_array - key) % 256
+
+            # Convert back to PIL Image and save
+            decrypted_image = Image.fromarray(decrypted_array.astype('uint8'))
+            decrypted_image.save(output_path)
+            print(f"Decrypted image saved to {output_path}")
+
+    except Exception as e:
+        print(f"Error during decryption: {e}")
+
+def main():
+    image_path = input("Enter the path of the image to encrypt: ")
+    encrypt_output_path = "encrypted_image.png"
+    decrypt_output_path = "decrypted_image.png"
+    
+    try:
+        key = int(input("Enter the encryption key (integer): "))
+    except ValueError:
+        print("Invalid key. Please enter an integer.")
+        return
+
+    # Encrypt the image
+    encrypt_image(image_path, encrypt_output_path, key)
+
+    # Decrypt the image
+    decrypt_image(encrypt_output_path, decrypt_output_path, key)
+
+if __name__ == "__main__":
+    main()
+
